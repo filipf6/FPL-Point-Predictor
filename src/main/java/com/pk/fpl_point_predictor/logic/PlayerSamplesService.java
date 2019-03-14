@@ -151,9 +151,10 @@ public class PlayerSamplesService {
                                 .getForEntity(playersResourceUrl + player.get("id").asText(), String.class)
                                 .getBody());
 
-                playerHistory = playerSpecificInfo.get("history");
+                playerHistory = playerSpecificInfo.get("history-summary");
                 playerHistorySize = playerHistory.size();
 
+                // skip if player didn't play last gameweek
                 if (playerHistorySize == 0
                         || playerHistory.get(playerHistorySize - 1).get("round").intValue() + 1
                         != playersRoot.get("next-event").intValue()) {
@@ -165,10 +166,16 @@ public class PlayerSamplesService {
 
                 switch (player.get("element_type").intValue()) {
                     case GOALKEEPER_STATISTICS_SAMPLE_NUMBER:
+//                        playerSamplesRepository.updateScore(
+//                                playerId,
+//                                fixtureId,
+//                                playerPoints,
+//                                "goalkeeper-samples");
+
                         playerSamplesRepository.updateScore(
                                 playerId,
                                 fixtureId,
-                                player.get("event_points").intValue(),
+                                isDoubleGameweek(playerHistory) ? playerHistory.get(1).get("total_points").intValue() : player.get("event_points").intValue(),
                                 "goalkeeper-samples");
 //                        GoalkeeperStatisticsSample goalkeeper =
 //                                this.goalkeeperStatisticsSampleRepository.findFirstByPlayerIdAndFixtureId(playerId, fixtureId);
@@ -180,7 +187,7 @@ public class PlayerSamplesService {
                         playerSamplesRepository.updateScore(
                                 playerId,
                                 fixtureId,
-                                player.get("event_points").intValue(),
+                                isDoubleGameweek(playerHistory) ? playerHistory.get(1).get("total_points").intValue() : player.get("event_points").intValue(),
                                 "defender-samples");
 //                        DefenderStatisticsSample defender =
 //                                this.defenderStatisticsSampleRepository.findFirstByPlayerIdAndFixtureId(playerId, fixtureId);
@@ -192,7 +199,7 @@ public class PlayerSamplesService {
                         playerSamplesRepository.updateScore(
                                 playerId,
                                 fixtureId,
-                                player.get("event_points").intValue(),
+                                isDoubleGameweek(playerHistory) ? playerHistory.get(1).get("total_points").intValue() : player.get("event_points").intValue(),
                                 "midfielder-samples");
 //                        MidfielderStatisticsSample midfielder =
 //                                this.midfielderStatisticsSampleRepository.findFirstByPlayerIdAndFixtureId(playerId, fixtureId);
@@ -204,7 +211,7 @@ public class PlayerSamplesService {
                         playerSamplesRepository.updateScore(
                                 playerId,
                                 fixtureId,
-                                player.get("event_points").intValue(),
+                                isDoubleGameweek(playerHistory) ? playerHistory.get(1).get("total_points").intValue() : player.get("event_points").intValue(),
                                 "forward-samples");
 //                        ForwardStatisticsSample forward =
 //                                this.forwardStatisticsSampleRepository.findFirstByPlayerIdAndFixtureId(playerId, fixtureId);
@@ -217,5 +224,9 @@ public class PlayerSamplesService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isDoubleGameweek(JsonNode playerHistory) {
+        return playerHistory.size() >= 3 && playerHistory.get(2).get("round").intValue() == playerHistory.get(1).get("round").intValue();
     }
 }
