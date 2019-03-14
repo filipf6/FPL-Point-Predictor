@@ -22,6 +22,7 @@ public class PlayerSamplesService {
     private DefenderSamplesRepository defenderSamplesRepository;
     private MidfielderSamplesRepository midfielderSamplesRepository;
     private ForwardSamplesRepository forwardSamplesRepository;
+    private PlayerSamplesRepository playerSamplesRepository;
 
     private PlayerSampleBuilder playerSampleBuilder;
 
@@ -38,11 +39,13 @@ public class PlayerSamplesService {
                                 DefenderSamplesRepository defenderSamplesRepository,
                                 MidfielderSamplesRepository midfielderSamplesRepository,
                                 ForwardSamplesRepository forwardSamplesRepository,
+                                PlayerSamplesRepository playerSamplesRepository,
                                 PlayerSampleBuilder playerSampleBuilder) {
         this.goalkeeperSamplesRepository = goalkeeperSamplesRepository;
         this.defenderSamplesRepository = defenderSamplesRepository;
         this.midfielderSamplesRepository = midfielderSamplesRepository;
         this.forwardSamplesRepository = forwardSamplesRepository;
+        this.playerSamplesRepository = playerSamplesRepository;
         this.playerSampleBuilder = playerSampleBuilder;
     }
 
@@ -80,7 +83,9 @@ public class PlayerSamplesService {
                     if (team.get("id").intValue() == playerGeneralInfo.get("team").intValue()) {
                         switch (playerGeneralInfo.get("element_type").intValue()) {
                             case GOALKEEPER_STATISTICS_SAMPLE_NUMBER:
-                                goalkeeperSamplesRepository.save(playerSampleBuilder.buildGoalkeeperSample(playerGeneralInfo, playerSpecificInfo, team));
+                                playerSamplesRepository.save(
+                                        playerSampleBuilder.buildGoalkeeperSample(playerGeneralInfo, playerSpecificInfo, team),
+                                        "goalkeeper-samples");
 //                                playerSample.set("player_id", playerGeneralInfo.get("id"));
 //                                playerSample.set("fixture_id", playerSpecificInfo.get("fixtures_summary").get(0).get("id"));
 //                                playerSample.set("cost", playerGeneralInfo.get("now_cost"));
@@ -99,13 +104,19 @@ public class PlayerSamplesService {
 //                                goalkeeperSamplesRepository.save(playerSample);
                                 break;
                             case DEFENDER_STATISTICS_SAMPLE_NUMBER:
-                                defenderSamplesRepository.save(playerSampleBuilder.buildDefenderStatisticsSample(playerGeneralInfo, playerSpecificInfo, team));
+                                playerSamplesRepository.save(
+                                        playerSampleBuilder.buildDefenderStatisticsSample(playerGeneralInfo, playerSpecificInfo, team),
+                                        "defender-samples");
                                 break;
                             case MIDFIELDER_STATISTICS_SAMPLE_NUMBER:
-                                midfielderSamplesRepository.save(playerSampleBuilder.buildMidfielderStatisticsSample(playerGeneralInfo, playerSpecificInfo, team));
+                                playerSamplesRepository.save(
+                                        playerSampleBuilder.buildMidfielderStatisticsSample(playerGeneralInfo, playerSpecificInfo, team),
+                                        "midfielder-samples");
                                 break;
                             case FORWARD_STATISTICS_SAMPLE_NUMBER:
-                                forwardSamplesRepository.save(playerSampleBuilder.buildForwardStatisticsSample(playerGeneralInfo, playerSpecificInfo, team));
+                                playerSamplesRepository.save(
+                                        playerSampleBuilder.buildForwardStatisticsSample(playerGeneralInfo, playerSpecificInfo, team),
+                                        "forward-samples");
                                 break;
                         }
                         break;
@@ -122,6 +133,89 @@ public class PlayerSamplesService {
     }
 
     public void collectLastFixtureScores() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> allInformationResponse = restTemplate.getForEntity(allInformationResourceUrl, String.class);
+        ObjectMapper mapper = new ObjectMapper();
 
+        JsonNode playersRoot = null;
+        try {
+            playersRoot = mapper.readTree(allInformationResponse.getBody());
+            JsonNode playersArray = playersRoot.get("elements");
+
+            int playerId, fixtureId, playerHistorySize;
+            JsonNode playerHistory;
+
+            for (JsonNode player : playersArray) {
+                JsonNode playerSpecificInfo = mapper
+                        .readTree(restTemplate
+                                .getForEntity(playersResourceUrl + player.get("id").asText(), String.class)
+                                .getBody());
+
+                playerHistory = playerSpecificInfo.get("history");
+                playerHistorySize = playerHistory.size();
+
+                if (playerHistorySize == 0
+                        || playerHistory.get(playerHistorySize - 1).get("round").intValue() + 1
+                        != playersRoot.get("next-event").intValue()) {
+                    continue;
+                }
+
+                playerId = player.get("id").intValue();
+                fixtureId = playerHistory.get(playerHistorySize - 1).get("fixture").intValue();
+
+                switch (player.get("element_type").intValue()) {
+                    case GOALKEEPER_STATISTICS_SAMPLE_NUMBER:
+                        playerSamplesRepository.updateScore(
+                                playerId,
+                                fixtureId,
+                                player.get("event_points").intValue(),
+                                "goalkeeper-samples");
+//                        GoalkeeperStatisticsSample goalkeeper =
+//                                this.goalkeeperStatisticsSampleRepository.findFirstByPlayerIdAndFixtureId(playerId, fixtureId);
+//                        if(goalkeeper == null) break;
+//                        goalkeeper.setScore(player.get("event_points").intValue());
+//                        this.goalkeeperStatisticsSampleRepository.save(goalkeeper);
+                        break;
+                    case DEFENDER_STATISTICS_SAMPLE_NUMBER:
+                        playerSamplesRepository.updateScore(
+                                playerId,
+                                fixtureId,
+                                player.get("event_points").intValue(),
+                                "defender-samples");
+//                        DefenderStatisticsSample defender =
+//                                this.defenderStatisticsSampleRepository.findFirstByPlayerIdAndFixtureId(playerId, fixtureId);
+//                        if(defender == null) break;
+//                        defender.setScore(player.get("event_points").intValue());
+//                        this.defenderStatisticsSampleRepository.save(defender);
+                        break;
+                    case MIDFIELDER_STATISTICS_SAMPLE_NUMBER:
+                        playerSamplesRepository.updateScore(
+                                playerId,
+                                fixtureId,
+                                player.get("event_points").intValue(),
+                                "midfielder-samples");
+//                        MidfielderStatisticsSample midfielder =
+//                                this.midfielderStatisticsSampleRepository.findFirstByPlayerIdAndFixtureId(playerId, fixtureId);
+//                        if(midfielder == null) break;
+//                        midfielder.setScore(player.get("event_points").intValue());
+//                        this.midfielderStatisticsSampleRepository.save(midfielder);
+                        break;
+                    case FORWARD_STATISTICS_SAMPLE_NUMBER:
+                        playerSamplesRepository.updateScore(
+                                playerId,
+                                fixtureId,
+                                player.get("event_points").intValue(),
+                                "forward-samples");
+//                        ForwardStatisticsSample forward =
+//                                this.forwardStatisticsSampleRepository.findFirstByPlayerIdAndFixtureId(playerId, fixtureId);
+//                        if(forward == null) break;
+//                        forward.setScore(player.get("event_points").intValue());
+//                        this.forwardStatisticsSampleRepository.save(forward);
+                        break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
