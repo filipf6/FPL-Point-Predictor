@@ -33,7 +33,7 @@ public class PlayerSamplesService {
         this.playerSampleBuilder = playerSampleBuilder;
     }
 
-    public void collectCurrentGameweekSamples() {
+    public void collectCurrentGameweekPlayerSamplesStats() {
         RestTemplate restTemplate = new RestTemplate();
         String teamsResourceUrl = "https://fantasy.premierleague.com/drf/teams";
 
@@ -93,7 +93,7 @@ public class PlayerSamplesService {
         }
     }
 
-    public void collectLastGameweekSamplesScores() {
+    public void collectLastGameweekPlayerSamplesScores() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> allInformationResponse = restTemplate.getForEntity(allInformationResourceUrl, String.class);
         ObjectMapper mapper = new ObjectMapper();
