@@ -23,9 +23,6 @@ public class PlayerSamplesRepository {
     }
 
     public void updateScore(int playerId, int fixtureId, int score, String collectionName) {
-        //mongoTemplate.insert(on.toString(), "goalkeeper_samples");
-        //playerGeneralInfo.get("id").intValue()
-        //playerSpecificInfo.get("fixtures_summary").get(0).get("id").intValue()
         Query query = new Query();
         query.addCriteria(Criteria.where("player_id").is(playerId).and("fixture_id").is(fixtureId));
         Update update = new Update();

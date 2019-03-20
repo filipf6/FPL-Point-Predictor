@@ -12,7 +12,7 @@ public class PlayerSampleBuilder {
     private ObjectNode buildGeneralStatistics(JsonNode playerGeneralInfo, JsonNode playerSpecificInfo, JsonNode playersTeam) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode playerSample = mapper.createObjectNode();
-        playerSample.set("player_id", playerGeneralInfo.get("id"));//setPlayerId(playerGeneralInfo.get("id").intValue());
+        playerSample.set("player_id", playerGeneralInfo.get("id"));
         playerSample.set("fixture_id", playerSpecificInfo.get("fixtures_summary").get(0).get("id"));
         playerSample.set("score", null);
         playerSample.set("cost", playerGeneralInfo.get("now_cost"));
@@ -39,15 +39,6 @@ public class PlayerSampleBuilder {
                 "threat",
                 "ict_index",
                 "open_play_crosses");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "points");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "transfers_balance");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "minutes");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "bonus");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "influence");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "creativity");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "threat");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "ict_index");
-//        buildPreviousMatchesStatistics(playerSample, playerSpecificInfo.get("history_summary"), "open_play_crosses");
         return playerSample;
     }
 
@@ -58,15 +49,6 @@ public class PlayerSampleBuilder {
                 "goals_conceded",
                 "penalties_saved",
                 "saves");
-//        buildPreviousMatchesStatistics(goalkeeperSample, playerSpecificInfo.get("history_summary"), "clean_sheets");
-//        buildPreviousMatchesStatistics(goalkeeperSample, playerSpecificInfo.get("history_summary"), "goals_conceded");
-//        buildPreviousMatchesStatistics(goalkeeperSample, playerSpecificInfo.get("history_summary"), "penalties_saved");
-//        buildPreviousMatchesStatistics(goalkeeperSample, playerSpecificInfo.get("history_summary"), "saves");
-//        goalkeeperSample.setPreviousFixturesCleanSheets(buildPreviousMatchesStatistics(playerSpecificInfo.get("history_summary"), "clean_sheets"));
-//        goalkeeperSample.setPreviousFixturesGoalsConceded(buildPreviousMatchesStatistics(playerSpecificInfo.get("history_summary"), "goals_conceded"));
-//        goalkeeperSample.setPreviousFixturesPenaltiesSaved(buildPreviousMatchesStatistics(playerSpecificInfo.get("history_summary"), "penalties_saved"));
-//        goalkeeperSample.setPreviousFixturesSaves(buildPreviousMatchesStatistics(playerSpecificInfo.get("history_summary"), "saves"));
-
         return goalkeeperSample;
     }
 
@@ -88,22 +70,6 @@ public class PlayerSampleBuilder {
                 "tackled",
                 "fouls",
                 "dribbles");
-//        buildGeneralStatistics(defenderStatisticsSample, playerGeneralInfo, playerSpecificInfo, playersTeam);
-//        defenderStatisticsSample.setPreviousFixturesGoals(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "goals_scored"));
-//        defenderStatisticsSample.setPreviousFixturesAssists(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "assists"));
-//        defenderStatisticsSample.setPreviousFixturesCleanSheets(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "clean_sheets"));
-//        defenderStatisticsSample.setPreviousFixturesGoalsConceded(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "goals_conceded"));
-//        defenderStatisticsSample.setPreviousFixturesChancesCreated(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "big_chances_created"));
-//        defenderStatisticsSample.setPreviousFixturesBlocks(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "clearances_blocks_interceptions"));
-//        defenderStatisticsSample.setPreviousFixturesRecoveries(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "recoveries"));
-//        defenderStatisticsSample.setPreviousFixturesKeyPasses(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "key_passes"));
-//        defenderStatisticsSample.setPreviousFixturesTackles(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "tackles"));
-//        defenderStatisticsSample.setPreviousFixturesWinningGoals(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "winning_goals"));
-//        defenderStatisticsSample.setPreviousFixturesFatalErrors(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "errors_leading_to_goal"));
-//        defenderStatisticsSample.setPreviousFixturesErrors(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "errors_leading_to_goal_attempt"));
-//        defenderStatisticsSample.setPreviousFixturesTackled(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "tackled"));
-//        defenderStatisticsSample.setPreviousFixturesFouls(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "fouls"));
-//        defenderStatisticsSample.setPreviousFixturesDribbles(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "dribbles"));
         return defenderStatisticsSample;
     }
 
@@ -126,27 +92,6 @@ public class PlayerSampleBuilder {
                 "tackled",
                 "fouls",
                 "dribbles");
-
-//        buildGeneralStatistics(midfielderStatisticsSample, playerGeneralInfo, playerSpecificInfo, playersTeam);
-//        midfielderStatisticsSample.setPreviousFixturesGoals(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "goals_scored"));
-//        midfielderStatisticsSample.setPreviousFixturesAssists(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "assists"));
-//        midfielderStatisticsSample.setPreviousFixturesCleanSheets(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "clean_sheets"));
-//        midfielderStatisticsSample.setPreviousFixturesGoalsConceded(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "goals_conceded"));
-//        midfielderStatisticsSample.setPreviousFixturesChancesCreated(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "big_chances_created"));
-//        midfielderStatisticsSample.setPreviousFixturesBlocks(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "clearances_blocks_interceptions"));
-//        midfielderStatisticsSample.setPreviousFixturesRecoveries(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "recoveries"));
-//        midfielderStatisticsSample.setPreviousFixturesKeyPasses(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "key_passes"));
-//        midfielderStatisticsSample.setPreviousFixturesTackles(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "tackles"));
-//        midfielderStatisticsSample.setPreviousFixturesWinningGoals(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "winning_goals"));
-//
-//        midfielderStatisticsSample.setPreviousFixturesChancesMissed(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "big_chances_missed"));
-//        midfielderStatisticsSample.setPreviousFixturesFatalErrors(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "errors_leading_to_goal"));
-//        midfielderStatisticsSample.setPreviousFixturesErrors(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "errors_leading_to_goal_attempt"));
-//        midfielderStatisticsSample.setPreviousFixturesTackled(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "tackled"));
-//        midfielderStatisticsSample.setPreviousFixturesFouls(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "fouls"));
-//        midfielderStatisticsSample.setPreviousFixturesDribbles(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "dribbles"));
-
-
         return midfielderStatisticsSample;
     }
 
@@ -162,19 +107,6 @@ public class PlayerSampleBuilder {
                 "tackled",
                 "fouls",
                 "dribbles");
-
-//        buildGeneralStatistics(forwardStatisticsSample, playerGeneralInfo, playerSpecificInfo, playersTeam);
-//
-//        forwardStatisticsSample.setPreviousFixturesGoals(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "goals_scored"));
-//        forwardStatisticsSample.setPreviousFixturesAssists(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "assists"));
-//        forwardStatisticsSample.setPreviousFixturesChancesCreated(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "big_chances_created"));
-//        forwardStatisticsSample.setPreviousFixturesKeyPasses(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "key_passes"));
-//        forwardStatisticsSample.setPreviousFixturesWinningGoals(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "winning_goals"));
-//        forwardStatisticsSample.setPreviousFixturesChancesMissed(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "big_chances_missed"));
-//        forwardStatisticsSample.setPreviousFixturesTackled(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "tackled"));
-//        forwardStatisticsSample.setPreviousFixturesFouls(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "fouls"));
-//        forwardStatisticsSample.setPreviousFixturesDribbles(buildPreviousMatchesIntegerStatistics(playerSpecificInfo.get("history_summary"), "dribbles"));
-
         return forwardStatisticsSample;
     }
 

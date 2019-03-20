@@ -20,17 +20,17 @@ public class PlayerSamplesController {
         this.dataCollectorService = dataCollectorService;
     }
 
-    @RequestMapping(value = "/collect-last-fixture-stats", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+    @RequestMapping(value = "/current-gameweek-samples-stats", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> gather() {
-        this.dataCollectorService.collectLastFixtureStats();
+    public ResponseEntity<?> collectCurrentGameweekSamplesStats() {
+        this.dataCollectorService.collectCurrentGameweekSamplesStats();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/collect-last-fixture-scores", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+    @RequestMapping(value = "/last-gameweek-samples-scores", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> gatherScores() {
-        this.dataCollectorService.collectLastFixtureScores();
+    public ResponseEntity<?> collectLastGameweekSamplesScores() {
+        this.dataCollectorService.collectLastGameweekSamplesScores();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
