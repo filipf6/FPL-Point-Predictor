@@ -20,10 +20,10 @@ public class PlayerSamplesController {
         this.dataCollectorService = dataCollectorService;
     }
 
-    @RequestMapping(value = "/current-gameweek-samples-stats", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+    @RequestMapping(value = "/current-gameweek-samples", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> collectCurrentGameweekSamplesStats() {
-        this.dataCollectorService.collectCurrentGameweekSamplesStats();
+    public ResponseEntity<?> collectCurrentGameweekSamples() {
+        this.dataCollectorService.collectCurrentGameweekSamples();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

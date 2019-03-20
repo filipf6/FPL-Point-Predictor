@@ -33,7 +33,7 @@ public class PlayerSamplesService {
         this.playerSampleBuilder = playerSampleBuilder;
     }
 
-    public void collectCurrentGameweekSamplesStats() {
+    public void collectCurrentGameweekSamples() {
         RestTemplate restTemplate = new RestTemplate();
         String teamsResourceUrl = "https://fantasy.premierleague.com/drf/teams";
 
