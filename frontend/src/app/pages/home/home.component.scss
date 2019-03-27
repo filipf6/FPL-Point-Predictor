@@ -1,0 +1,24 @@
+.container-btn {
+  margin-bottom: 1.5rem;
+}
+
+.container-btn > * {
+  margin-right: 1.5rem;
+}
+
+:host ::ng-deep .multiselect > div {
+  min-width: 180px;
+}
+
+ng5-slider {
+  width: 250px;
+}
+
+:host ::ng-deep .custom-slider {
+    .ng5-slider-selection {
+      background: #5dcfe3;
+    }
+    .ng5-slider-pointer {
+      background: #73a1ff;
+    }
+}

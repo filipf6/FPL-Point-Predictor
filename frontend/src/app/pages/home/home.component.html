@@ -1,0 +1,14 @@
+<nb-card>
+  <nb-card-header>
+    Preditions Table
+  </nb-card-header>
+  <nb-card-body>
+    <div class="container-btn">
+      <button class="btn btn-hero-primary" (click)="testFunction()">Test button</button>
+      <ss-multiselect-dropdown class="multiselect" [options]="myOptions" [texts]="myTexts" [settings]="mySettings" [(ngModel)]="optionsModel" (ngModelChange)="onChange($event)"></ss-multiselect-dropdown>
+      <ng5-slider class="custom-slider" [(value)]="value" [(highValue)]="highValue" [options]="options"></ng5-slider>
+    </div>
+    <ng2-smart-table [settings]="settings" [source]="source">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>
