@@ -7,8 +7,8 @@ import { of as observableOf } from 'rxjs';
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { DataModule } from './data/data.module';
 import { AnalyticsService } from './utils/analytics.service';
-import {SmartTableData} from "./data/smart-table";
-import {SmartTableService} from "./mock/smart-table.service";
+import {SmartTableData} from './data/smart-table';
+import {SmartTableService} from './mock/smart-table.service';
 
 const socialLinks = [
   {

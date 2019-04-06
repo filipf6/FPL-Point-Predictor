@@ -102,55 +102,55 @@ public class PlayerSamplesService {
             JsonNode playersRoot = mapper.readTree(allInformationResponse.getBody());
             JsonNode playersArray = playersRoot.get("elements");
 
-            int playerId, fixtureId, playerHistorySize;
-            JsonNode playerHistory;
-
             for (JsonNode player : playersArray) {
                 JsonNode playerSpecificInfo = mapper
                         .readTree(restTemplate
                                 .getForEntity(playersResourceUrl.concat(player.get("id").asText()), String.class)
                                 .getBody());
 
-                playerHistory = playerSpecificInfo.get("history_summary");
-                playerHistorySize = playerHistory.size();
+                JsonNode playerHistory = playerSpecificInfo.get("history_summary");
+                int playerHistorySize = playerHistory.size();
 
                 // skip if player didn't play last gameweek
                 if (playerHistorySize == 0
                         || playerHistory.get(playerHistorySize - 1).get("round").intValue() + 1
-                        != playersRoot.get("next-event").intValue()) {
+                        != playersRoot.get("current-event").intValue()) {
                     continue;
                 }
 
-                playerId = player.get("id").intValue();
-                fixtureId = playerHistory.get(playerHistorySize - 1).get("fixture").intValue();
+                int matchesBack = isDoubleGameweek(playerHistory) ? 2 : 1;
+
+                int playerId = player.get("id").intValue();
+                int fixtureId = playerHistory.get(playerHistorySize - matchesBack).get("fixture").intValue();
+                int playerScore = playerHistory.get(playerHistorySize - matchesBack).get("total_points").intValue();
 
                 switch (player.get("element_type").intValue()) {
                     case GOALKEEPER_STATISTICS_SAMPLE_NUMBER:
                         playerSamplesRepository.updateScore(
                                 playerId,
                                 fixtureId,
-                                isDoubleGameweek(playerHistory) ? playerHistory.get(1).get("total_points").intValue() : player.get("event_points").intValue(),
+                                playerScore,
                                 "goalkeeper-samples");
                         break;
                     case DEFENDER_STATISTICS_SAMPLE_NUMBER:
                         playerSamplesRepository.updateScore(
                                 playerId,
                                 fixtureId,
-                                isDoubleGameweek(playerHistory) ? playerHistory.get(1).get("total_points").intValue() : player.get("event_points").intValue(),
+                                playerScore,
                                 "defender-samples");
                         break;
                     case MIDFIELDER_STATISTICS_SAMPLE_NUMBER:
                         playerSamplesRepository.updateScore(
                                 playerId,
                                 fixtureId,
-                                isDoubleGameweek(playerHistory) ? playerHistory.get(1).get("total_points").intValue() : player.get("event_points").intValue(),
+                                playerScore,
                                 "midfielder-samples");
                         break;
                     case FORWARD_STATISTICS_SAMPLE_NUMBER:
                         playerSamplesRepository.updateScore(
                                 playerId,
                                 fixtureId,
-                                isDoubleGameweek(playerHistory) ? playerHistory.get(1).get("total_points").intValue() : player.get("event_points").intValue(),
+                                playerScore,
                                 "forward-samples");
                         break;
                 }

@@ -5,8 +5,8 @@ import { HomeModule } from './home/home.module';
 import { PagesRoutingModule } from './pages-routing.module';
 import { ThemeModule } from '../@theme/theme.module';
 import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
-import {RestService} from "../utils/rest.service";
-import {HomeService} from "./home/home.service";
+import {RestService} from '../utils/rest.service';
+import {HomeService} from './home/home.service';
 
 const PAGES_COMPONENTS = [
   PagesComponent,
@@ -22,7 +22,7 @@ const PAGES_COMPONENTS = [
   declarations: [
     ...PAGES_COMPONENTS,
   ],
-  providers: [RestService, HomeService]
+  providers: [RestService, HomeService],
 })
 export class PagesModule {
 }

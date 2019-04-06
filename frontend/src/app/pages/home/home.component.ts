@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {LocalDataSource} from 'ng2-smart-table';
-import {SmartTableData} from "../../@core/data/smart-table";
-import {HomeService} from "./home.service";
+import {SmartTableData} from '../../@core/data/smart-table';
+import {HomeService} from './home.service';
 import {IMultiSelectOption, IMultiSelectSettings, IMultiSelectTexts} from 'angular-2-dropdown-multiselect';
 import {Options} from 'ng5-slider';
 
@@ -9,7 +9,7 @@ import {Options} from 'ng5-slider';
 @Component({
   selector: 'ngx-dashboard',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
 
@@ -57,7 +57,7 @@ export class HomeComponent {
     //itemClasses: 'btn btn-default',
     //containerClasses: 'btn btn-default',
     dynamicTitleMaxItems: 3,
-    displayAllSelectedText: true
+    displayAllSelectedText: true,
   };
   myTexts: IMultiSelectTexts = {
     checkAll: 'Select all',
