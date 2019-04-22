@@ -51,11 +51,11 @@ export class HomeComponent {
   optionsModel: string[];
   myOptions: IMultiSelectOption[];
   mySettings: IMultiSelectSettings = {
-    //enableSearch: true,
-    //checkedStyle: 'fontawesome',
-    //buttonClasses: 'btn btn-default btn-hero-primary',
-    //itemClasses: 'btn btn-default',
-    //containerClasses: 'btn btn-default',
+    // enableSearch: true,
+    // checkedStyle: 'fontawesome',
+    // buttonClasses: 'btn btn-default btn-hero-primary',
+    // itemClasses: 'btn btn-default',
+    // containerClasses: 'btn btn-default',
     dynamicTitleMaxItems: 3,
     displayAllSelectedText: true,
   };
