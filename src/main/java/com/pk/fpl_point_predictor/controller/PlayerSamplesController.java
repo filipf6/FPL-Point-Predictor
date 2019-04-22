@@ -1,7 +1,5 @@
 package com.pk.fpl_point_predictor.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.pk.fpl_point_predictor.logic.PlayerSamplesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,11 +37,6 @@ public class PlayerSamplesController {
     @RequestMapping(value = "/test-url", method = RequestMethod.GET)
     public ResponseEntity<?> testMethod() {
         System.out.println("test Succesful!");
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode playerSample = mapper.createObjectNode();
-        playerSample.put("id", 1);
-        playerSample.put("name", "Filip Gurgul");
-        System.out.println(playerSample.toString());
-        return new ResponseEntity<>(playerSample.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

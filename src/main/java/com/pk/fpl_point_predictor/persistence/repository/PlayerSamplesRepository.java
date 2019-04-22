@@ -29,4 +29,5 @@ public class PlayerSamplesRepository {
         update.set("score", score);
         mongoTemplate.updateFirst(query, update, collectionName);
     }
+
 }

@@ -113,7 +113,7 @@ public class PlayerSamplesService {
 
                 // skip if player didn't play last gameweek
                 if (playerHistorySize == 0
-                        || playerHistory.get(playerHistorySize - 1).get("round").intValue() + 1
+                        || playerHistory.get(playerHistorySize - 1).get("round").intValue()
                         != playersRoot.get("current-event").intValue()) {
                     continue;
                 }
