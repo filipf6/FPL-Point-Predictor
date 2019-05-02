@@ -19,10 +19,6 @@ public class PlayerSampleBuilder {
         playerSample.set("points_per_game", playerGeneralInfo.get("points_per_game"));
         playerSample.set("form", playerGeneralInfo.get("form"));
         playerSample.set("selected_by_percent", playerGeneralInfo.get("selected_by_percent"));
-        playerSample.set("influence", playerGeneralInfo.get("influence"));
-        playerSample.set("creativity", playerGeneralInfo.get("creativity"));
-        playerSample.set("threat", playerGeneralInfo.get("threat"));
-        playerSample.set("ict_index", playerGeneralInfo.get("ict_index"));
         playerSample.set("team_strength", playersTeam.get("strength"));
         playerSample.put("last_season_points_per_minute", countHistoricalSeasonPointsPerMinute(1, playerSpecificInfo));
         playerSample.put("two_seasons_ago_points_per_minute", countHistoricalSeasonPointsPerMinute(2, playerSpecificInfo));
@@ -129,14 +125,18 @@ public class PlayerSampleBuilder {
 
     private void buildPreviousMatchesStatistics(ObjectNode playerSample, JsonNode previousMatchesStatistics, String... statisticNames) {
         int previousMatchesNumber = previousMatchesStatistics.size();
+        if (previousMatchesNumber == 0) return;
         int numberOfMatchesConsidered =
                 previousMatchesNumber < numberOfPreviousMatchesConsidered ?
                         previousMatchesNumber : numberOfPreviousMatchesConsidered;
 
         for (String statisticName : statisticNames) {
+            double sum = 0.0;
             for (int i = 0; i < numberOfMatchesConsidered; i++) {
-                playerSample.set("previous_fixtures_".concat(statisticName.concat("_").concat(Integer.toString(i))), previousMatchesStatistics.get(i).get(statisticName));
+                sum += previousMatchesStatistics.get(i).get(statisticName).asDouble();
+                playerSample.set("previous_fixtures_".concat(statisticName).concat("_").concat(Integer.toString(i)), previousMatchesStatistics.get(i).get(statisticName));
             }
+            playerSample.put("previous_fixtures_".concat(statisticName).concat("_average"), roundPoints(sum / (double) numberOfMatchesConsidered));
         }
     }
 }
