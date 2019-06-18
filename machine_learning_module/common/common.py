@@ -23,9 +23,10 @@ all_models_variables = ['cost',
                                     'previous_fixtures_threat_2',
                                     'previous_fixtures_threat_average',
                                     'previous_fixtures_ict_index_2',
-                                    'previous_fixtures_ict_index_average',
-                                    'previous_fixtures_open_play_crosses_2',
-                                    'previous_fixtures_open_play_crosses_average']
+                                    'previous_fixtures_ict_index_average']
+                                    #,
+                                    #'previous_fixtures_open_play_crosses_2',
+                                    #'previous_fixtures_open_play_crosses_average']
                  
 goalkeeper_specific_variables = ['previous_fixtures_clean_sheets_2',
                                     'previous_fixtures_clean_sheets_average',
@@ -88,7 +89,7 @@ midfielder_specific_variables = ['previous_fixtures_goals_scored_2',
                                      'previous_fixtures_winning_goals_2',
                                     'previous_fixtures_winning_goals_average',
                                     'previous_fixtures_big_chances_missed_2',
-                                    'previous_fixtures_big_chances_missed_average'
+                                    'previous_fixtures_big_chances_missed_average',
                                     'previous_fixtures_errors_leading_to_goal_2',
                                     'previous_fixtures_errors_leading_to_goal_average',
                                     'previous_fixtures_errors_leading_to_goal_attempt_2',
