@@ -82,13 +82,15 @@ defender_dependent_variable = defender_samples_dataframe["score"]
 #defender_undependent_variables = pca.fit_transform(defender_undependent_variables)
 
 
-plt.xticks([-4,-2,0,2,4,6,8,10,12,14,16])
-
-plt.xticks([-1,0,1,2,3,4,5])
-plt.hist(defender_dependent_variable, bins = int(np.max(defender_dependent_variable - np.min(defender_dependent_variable))) + 1,  color = 'blue', edgecolor = 'black')
-plt.title('Rozkład wyników')
-plt.xlabel('Wynik')
-plt.ylabel('Ilość próbek')
+# =============================================================================
+# plt.xticks([-4,-2,0,2,4,6,8,10,12,14,16])
+# 
+# plt.xticks([-1,0,1,2,3,4,5])
+# plt.hist(defender_dependent_variable, bins = int(np.max(defender_dependent_variable - np.min(defender_dependent_variable))) + 1,  color = 'blue', edgecolor = 'black')
+# plt.title('Rozkład wyników')
+# plt.xlabel('Wynik')
+# plt.ylabel('Ilość próbek')
+# =============================================================================
 
 
 # =============================================================================
@@ -117,6 +119,8 @@ r2=[0,0.0]
 
 c=1
 any_vif_exceeded = True
+
+
 while any_vif_exceeded:
     vif = pd.DataFrame()
     x = X_train.values
@@ -127,7 +131,7 @@ while any_vif_exceeded:
         X_train.drop(vif.loc[vif['VIF Factor'].idxmax(), 'features'], axis=1, inplace=True)
         X_test.drop(vif.loc[vif['VIF Factor'].idxmax(), 'features'], axis=1, inplace=True)
         
-        regressor = LinearRegression()  
+        regressor = LinearRegression(normalize = False, n_jobs = -1)  
         regressor.fit(X_train, y_train) 
         y_pred = regressor.predict(X_test)
 
@@ -144,9 +148,12 @@ while any_vif_exceeded:
             
         
         print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))  
-        print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))  
-        #print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred))) 
-        print('R-squared: ', metrics.r2_score(y_test, y_pred))
+        #print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))  
+        print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred))) 
+        r_squared = metrics.r2_score(y_test, y_pred)
+        print('R-squared: ', r_squared)
+        adj_r_squared = 1 - (1-r_squared)*(len(y_test)-1)/(len(y_test)-X_test.shape[1]-1)
+        print('adjusted R-squared: ', adj_r_squared)
         c+=1
     else:
         any_vif_exceeded = False
@@ -158,6 +165,57 @@ print('r2', r2)
 pca = PCA(n_components=0.80)
 X_train = pca.fit_transform(X_train)
 X_test = pca.transform(X_test)
+
+
+
+
+# =============================================================================
+# any_vif_exceeded = True
+# to_remove = 0
+# 
+# while any_vif_exceeded:
+#     vif = pd.DataFrame()
+#     x = X_train.values
+#     vif['VIF Factor'] = [variance_inflation_factor(X_train.values, i) for i in range(X_train.shape[1])]
+#     vif['features'] = X_train.columns
+#     for i in range(0, to_remove):
+#         vif.drop(vif['VIF Factor'].idxmax(), inplace = True)
+#     if vif['VIF Factor'].max() > 5.0:
+#         #print(c, ' removing ', vif.loc[vif['VIF Factor'].idxmax(), 'features'])
+#         new_X_train = X_train.drop(vif.loc[vif['VIF Factor'].idxmax(), 'features'], axis=1)
+#         new_X_test = X_test.drop(vif.loc[vif['VIF Factor'].idxmax(), 'features'], axis=1)
+#         
+#         regressor = LinearRegression()  
+#         regressor.fit(X_train, y_train) 
+#         y_pred = regressor.predict(X_test)
+#         
+#         r_squared = metrics.r2_score(y_test, y_pred)
+#         adj_r_squared = 1 - (1-r_squared)*(len(y_test)-1)/(len(y_test)-X_test.shape[1]-1)
+#         
+#         new_regressor = LinearRegression()  
+#         new_regressor.fit(new_X_train, y_train) 
+#         y_pred = new_regressor.predict(new_X_test)
+# 
+#         r_squared = metrics.r2_score(y_test, y_pred)
+#         new_adj_r_squared = 1 - (1-r_squared)*(len(y_test)-1)/(len(y_test)-new_X_test.shape[1]-1)
+#             
+#         if(new_adj_r_squared > adj_r_squared):
+#             X_train.drop(vif.loc[vif['VIF Factor'].idxmax(), 'features'], axis=1, inplace = True)
+#             X_test.drop(vif.loc[vif['VIF Factor'].idxmax(), 'features'], axis=1, inplace = True)
+#         else:
+#             to_remove += 1
+#     else:
+#         any_vif_exceeded = False
+# =============================================================================
+
+
+# =============================================================================
+# pca = PCA(n_components=0.80)
+# X_train = pca.fit_transform(X_train)
+# X_test = pca.transform(X_test)
+# =============================================================================
+
+
 
 # =============================================================================
 # feature selection with lasso method
@@ -190,33 +248,50 @@ X_test = pca.transform(X_test)
 # =============================================================================
 # training the alghoritm - linear regression
 # =============================================================================
-regressor = LinearRegression() 
+# =============================================================================
+# regressor = LinearRegression() 
+# 
+# rfe = RFECV(regressor)
+# fit = rfe.fit(X_train, y_train)
+# a1 = fit.n_features_
+# a2 = fit.support_
+# a3 = fit.ranking_
+#  
+# indexes = np.where(fit.support_ != True)
+# 
+# # removing columns in numpy array
+# train = np.delete(X_train, indexes, 1)
+# test = np.delete(X_test, indexes, 1)
+# 
+# # removing columns in dataframe
+# #train = X_train.drop(X_train.columns[indexes], axis=1)
+# #test = X_test.drop(X_test.columns[indexes], axis=1)
+# 
+# regressor.fit(train, y_train)
+# 
+# y_pred = regressor.predict(test)
+# print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))  
+# print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))  
+# #print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred))) 
+# print('R-squared: ', metrics.r2_score(y_test, y_pred))
+# 
+# comparison = np.vstack((y_test, y_pred)).T
+# =============================================================================
 
-rfe = RFECV(regressor)
-fit = rfe.fit(X_train, y_train)
-a1 = fit.n_features_
-a2 = fit.support_
-a3 = fit.ranking_
- 
-indexes = np.where(fit.support_ != True)
+regressor = LinearRegression(normalize = False, n_jobs = -1) 
+regressor.fit(X_train, y_train)
 
-# removing columns in numpy array
-train = np.delete(X_train, indexes, 1)
-test = np.delete(X_test, indexes, 1)
-
-# removing columns in dataframe
-#train = X_train.drop(X_train.columns[indexes], axis=1)
-#test = X_test.drop(X_test.columns[indexes], axis=1)
-
-regressor.fit(train, y_train)
-
-y_pred = regressor.predict(test)
+y_pred = regressor.predict(X_test)
 print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))  
-print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))  
-#print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred))) 
-print('R-squared: ', metrics.r2_score(y_test, y_pred))
+#print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))  
+print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred))) 
+r_squared = metrics.r2_score(y_test, y_pred)
+print('R-squared: ', r_squared)
+adj_r_squared = 1 - (1-r_squared)*(len(y_test)-1)/(len(y_test)-X_test.shape[1]-1)
+print('adjusted R-squared: ', adj_r_squared)
 
 comparison = np.vstack((y_test, y_pred)).T
+
 
 #regressor.fit(X_train, y_train) 
 

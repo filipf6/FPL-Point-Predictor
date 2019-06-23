@@ -10,9 +10,9 @@
   min-width: 180px;
 }
 
-ng5-slider {
-  width: 250px;
-}
+//ng5-slider {
+//  width: 100% !important;
+//}
 
 :host ::ng-deep .custom-slider {
     .ng5-slider-selection {
@@ -21,4 +21,11 @@ ng5-slider {
     .ng5-slider-pointer {
       background: #73a1ff;
     }
+}
+
+.bottom-column
+{
+  float: none;
+  display: table-cell;
+  vertical-align: bottom;
 }

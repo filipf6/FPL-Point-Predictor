@@ -8,7 +8,7 @@ import numpy as np
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.decomposition import PCA
 
-def process_data_for_classification(samples_dataframe, position_specific_variables):    
+def process_data(samples_dataframe, position_specific_variables, pca_variance_percentage):    
     # =============================================================================
     # choose variables for exploration, drop rows with missing values
     # 
@@ -61,9 +61,9 @@ def process_data_for_classification(samples_dataframe, position_specific_variabl
     
     
     # =============================================================================
-    # reduce dimentions to 80% of variance with principal component analysis
+    # reduce dimentions to given level of variance with principal component analysis
     # =============================================================================
-    pca = PCA(n_components=0.80)
+    pca = PCA(n_components=pca_variance_percentage)
     X_train = pca.fit_transform(X_train)
     X_test = pca.transform(X_test)
     
@@ -72,16 +72,18 @@ def process_data_for_classification(samples_dataframe, position_specific_variabl
 
 def discretizate(samples_dataframe):
     samples_dataframe['score'] = np.where(samples_dataframe['score'] < 0, 0, samples_dataframe['score'])
-    samples_dataframe['score'] = np.where(samples_dataframe['score'] == 4, 3, samples_dataframe['score'])
-    samples_dataframe['score'] = np.where(samples_dataframe['score'] == 5, 3, samples_dataframe['score'])
-    samples_dataframe['score'] = np.where(samples_dataframe['score'] == 6, 3, samples_dataframe['score'])
-    samples_dataframe['score'] = np.where(samples_dataframe['score'] > 6, 4, samples_dataframe['score'])
+    samples_dataframe['score'] = np.where(samples_dataframe['score'] == 2, 1, samples_dataframe['score'])
+    samples_dataframe['score'] = np.where(samples_dataframe['score'] == 3, 2, samples_dataframe['score'])
+    samples_dataframe['score'] = np.where(samples_dataframe['score'] == 4, 2, samples_dataframe['score'])
+    samples_dataframe['score'] = np.where(samples_dataframe['score'] == 5, 2, samples_dataframe['score'])
+    samples_dataframe['score'] = np.where(samples_dataframe['score'] == 6, 2, samples_dataframe['score'])
+    samples_dataframe['score'] = np.where(samples_dataframe['score'] > 6, 3, samples_dataframe['score'])
     
 def distribution(dependent_variable):
-    plt.xticks(np.arange(5), ('<1', '1', '2', '3-6', '>6'))
+    plt.xticks(np.arange(4), ('<1', '1-2', '3-6', '>6'))
 
     plt.hist(dependent_variable, bins = int(np.max(dependent_variable) - np.min(dependent_variable)) + 1,  color = 'blue', edgecolor = 'black')
-    plt.title('Obrońcy')
+    plt.title('Bramkarze')
     plt.xlabel('Wynik')
     plt.ylabel('Ilość obserwacji')
 
@@ -93,16 +95,13 @@ def normalize(X_train, X_test):
     return X_train, X_test
 
 def vif_feature_selection(X_train, X_test):
-    #c = 1
     any_vif_exceeded = True
     while any_vif_exceeded:
         vif = pd.DataFrame()
         vif['VIF Factor'] = [variance_inflation_factor(X_train.values, i) for i in range(X_train.shape[1])]
         vif['features'] = X_train.columns
         if vif['VIF Factor'].max() > 5.0:
-            #print(c, ' removing ', vif.loc[vif['VIF Factor'].idxmax(), 'features'])
             X_train.drop(vif.loc[vif['VIF Factor'].idxmax(), 'features'], axis=1, inplace=True)
             X_test.drop(vif.loc[vif['VIF Factor'].idxmax(), 'features'], axis=1, inplace=True)
-            #c += 1
         else:
             any_vif_exceeded = False

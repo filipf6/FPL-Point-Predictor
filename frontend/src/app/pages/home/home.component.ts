@@ -13,6 +13,12 @@ import {Options} from 'ng5-slider';
 })
 export class HomeComponent {
 
+  selectedItem: string = '0';
+
+
+
+
+
   // predictions table configuration
   // TODO: move from component
   settings = {
@@ -57,7 +63,7 @@ export class HomeComponent {
     // itemClasses: 'btn btn-default',
     // containerClasses: 'btn btn-default',
     dynamicTitleMaxItems: 3,
-    displayAllSelectedText: true,
+    displayAllSelectedText: false,
   };
   myTexts: IMultiSelectTexts = {
     checkAll: 'Select all',
