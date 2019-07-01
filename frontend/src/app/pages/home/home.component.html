@@ -5,45 +5,37 @@
   <nb-card-body>
     <div class="row">
       <div class="form-group col-3">
-        <label for="alghoritm-select">Select machine learning alghoritm:</label>
-        <nb-select placeholder="Select Alghoritm" id="alghoritm-select" [(selected)]="selectedItem">
-          <nb-option value="0">Linear regression</nb-option>
-          <nb-option value="1">SVM Regression</nb-option>
-          <nb-option value="2">K-nearest neighbors</nb-option>
-          <nb-option value="3">Random forest</nb-option>
-          <nb-option value="4">SVM Classification</nb-option>
+        <label for="alghoritm-select">Select machine learning algorithm:</label>
+        <nb-select placeholder="Select Alghoritm" id="alghoritm-select" [(ngModel)]="selectedAlgorithm" (ngModelChange)="algorithmChange()">
+          <nb-option *ngFor="let algorithm of algorithms" value="{{algorithm.name}}">{{algorithm.name}}</nb-option>
         </nb-select>
       </div>
     </div>
 
     <div class="row" style="margin-bottom: 10px">
       <div class="col-3" style="padding-top: 35px">
-        <input type="text" nbInput fullWidth placeholder="Player's name">
+        <input type="text" nbInput fullWidth (input)="filterTableByName($event.target.value)" placeholder="Player's name">
       </div>
-      <!--<button class="btn btn-hero-primary" (click)="testFunction()">Test button</button>-->
-      <!--<ss-multiselect-dropdown class="multiselect col-3" [options]="myOptions" [texts]="myTexts" [settings]="mySettings" [(ngModel)]="optionsModel" (ngModelChange)="onChange($event)"></ss-multiselect-dropdown>-->
-      <nb-select class="col-3 bottom-column" multiple  placeholder="Select team" style="padding-top: 35px">
-        <nb-option value="1">Option 1</nb-option>
-        <nb-option value="2">Option 2</nb-option>
-        <nb-option value="3">Option 3</nb-option>
-        <nb-option value="4">Option 4</nb-option>
+      <nb-select [(ngModel)]="selectedTeams" (ngModelChange)="filterTableByTeam()" class="col-3 bottom-column" multiple placeholder="Select team" style="padding-top: 35px">
+        <nb-option>Clean selector</nb-option>
+        <nb-option *ngFor="let team of teams" value="{{team}}">{{team}}</nb-option>
       </nb-select>
         <div class="col-3 form-group">
           <div class="d-flex flex-column">
           <label for="price-slider">Player's price:</label>
-          <ng5-slider class="custom-slider" [(value)]="value" [(highValue)]="highValue" [options]="options" id="price-slider"></ng5-slider>
+          <ng5-slider class="custom-slider" [(value)]="priceSliderBottom" [(highValue)]="priceSliderUp" [options]="priceSliderOptions" (userChangeEnd)="filterTableByPrice()" id="price-slider"></ng5-slider>
           </div>
         </div>
 
         <div class="col-3 form-group">
           <div class="d-flex flex-column">
           <label for="form-slider">Player's form:</label>
-          <ng5-slider class="custom-slider" [(value)]="value" [(highValue)]="highValue" [options]="options" id="form-slider"></ng5-slider>
+          <ng5-slider class="custom-slider" [(value)]="formSliderBottom" [(highValue)]="formSliderUp" [options]="formSliderOptions" (userChangeEnd)="filterTableByForm()" id="form-slider"></ng5-slider>
           </div>
         </div>
 
     </div>
-    <ng2-smart-table [settings]="settings" [source]="source">
+    <ng2-smart-table [settings]="tableSettings" [source]="tableDataSource">
     </ng2-smart-table>
   </nb-card-body>
 </nb-card>

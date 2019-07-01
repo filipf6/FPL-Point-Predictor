@@ -142,15 +142,17 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 # SVC
 # 
 # =============================================================================
-X_train, X_test, y_train, y_test = process_data(Dataset().get_dataset('midfielder-samples'), midfielder_specific_variables, 0.56387)
-
-svm = SVC(C = 8.0, kernel = 'rbf', gamma = 0.318881)
-svm.fit(X_train, y_train)
-y_pred = svm.predict(X_test)
-
-print('F1 score micro: ', metrics.f1_score(y_test, y_pred, average='micro')) 
-print('F1 score macro: ', metrics.f1_score(y_test, y_pred, average='macro')) 
-comparison = np.vstack((y_test, y_pred)).T
+# =============================================================================
+# X_train, X_test, y_train, y_test = process_data(Dataset().get_dataset('midfielder-samples'), midfielder_specific_variables, 0.56387)
+# 
+# svm = SVC(C = 8.0, kernel = 'rbf', gamma = 0.318881)
+# svm.fit(X_train, y_train)
+# y_pred = svm.predict(X_test)
+# 
+# print('F1 score micro: ', metrics.f1_score(y_test, y_pred, average='micro')) 
+# print('F1 score macro: ', metrics.f1_score(y_test, y_pred, average='macro')) 
+# comparison = np.vstack((y_test, y_pred)).T
+# =============================================================================
 
 # =============================================================================
 # SVR OPTIMIZATION
@@ -240,23 +242,25 @@ comparison = np.vstack((y_test, y_pred)).T
 # SVR
 # 
 # =============================================================================
-X_train, X_test, y_train, y_test = process_data(Dataset().get_dataset('midfielder-samples'), midfielder_specific_variables, 0.0500029)
-
-svm = SVR(C = 0.170544, kernel = 'rbf', gamma = 0.895228, epsilon = 0.24475588)
-svm.fit(X_train, y_train)
-y_pred = svm.predict(X_test)
-
-print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))   
-print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred))) 
-r_squared = metrics.r2_score(y_test, y_pred)
-print('R-squared: ', r_squared)
-adj_r_squared = 1 - (1-r_squared)*(len(y_test)-1)/(len(y_test)-X_test.shape[1]-1)
-print('adjusted R-squared: ', adj_r_squared)
-comparison = np.vstack((y_test, y_pred)).T
-
-
-
-X_train, X_test, y_train, y_test = process_data(Dataset().get_dataset('midfielder-samples'), midfielder_specific_variables, 0.8825448)
+# =============================================================================
+# X_train, X_test, y_train, y_test = process_data(Dataset().get_dataset('midfielder-samples'), midfielder_specific_variables, 0.0500029)
+# 
+# svm = SVR(C = 0.170544, kernel = 'rbf', gamma = 0.895228, epsilon = 0.24475588)
+# svm.fit(X_train, y_train)
+# y_pred = svm.predict(X_test)
+# 
+# print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))   
+# print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred))) 
+# r_squared = metrics.r2_score(y_test, y_pred)
+# print('R-squared: ', r_squared)
+# adj_r_squared = 1 - (1-r_squared)*(len(y_test)-1)/(len(y_test)-X_test.shape[1]-1)
+# print('adjusted R-squared: ', adj_r_squared)
+# comparison = np.vstack((y_test, y_pred)).T
+# 
+# 
+# 
+# X_train, X_test, y_train, y_test = process_data(Dataset().get_dataset('midfielder-samples'), midfielder_specific_variables, 0.8825448)
+# =============================================================================
 
 # =============================================================================
 # def optimise_svc(x):

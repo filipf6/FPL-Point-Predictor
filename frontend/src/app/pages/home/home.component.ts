@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LocalDataSource} from 'ng2-smart-table';
 import {SmartTableData} from '../../@core/data/smart-table';
 import {HomeService} from './home.service';
@@ -11,17 +11,157 @@ import {Options} from 'ng5-slider';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
-  selectedItem: string = '0';
+  tableSettings = HomeComponentConfiguration.tableSettings;
+  tableDataSource = new LocalDataSource();
+  tableData = [];
 
+  algorithms = HomeComponentConfiguration.dataExplorationAlgorithms;
+  selectedAlgorithm = 'Linear Regression';
 
+  teams: string[];
+  selectedTeams: string[];
 
+  priceSliderOptions = HomeComponentConfiguration.priceSliderOptions;
+  priceSliderBottom: number = 3;
+  priceSliderUp: number = 14;
 
+  formSliderOptions = HomeComponentConfiguration.formSliderOptions;
+  formSliderBottom: number = 0;
+  formSliderUp: number = 10;
 
-  // predictions table configuration
-  // TODO: move from component
-  settings = {
+  constructor(private service: SmartTableData, private homeService: HomeService) {
+  }
+
+  ngOnInit(): void {
+    this.homeService.getTableData().subscribe(data => {
+      this.tableData = data.table;
+      this.tableDataSource.load(this.tableData);
+      this.teams = data.teams;
+
+      let bottomPrice = Math.max.apply(Math, data.table.map((row) => row.price));
+      let upPrice = Math.min.apply(Math, data.table.map(row => row.price));
+      this.priceSliderOptions.ceil = bottomPrice;
+      this.priceSliderOptions.floor = upPrice;
+      this.priceSliderBottom = bottomPrice;
+      this.priceSliderUp = upPrice;
+
+      let bottomForm = Math.max.apply(Math, data.table.map((row) => row.form));
+      let upForm = Math.min.apply(Math, data.table.map(row => row.form));
+      this.formSliderOptions.ceil = bottomForm;
+      this.formSliderOptions.floor = upForm;
+      this.formSliderBottom = bottomForm;
+      this.formSliderUp = upForm;
+    });
+  }
+
+  algorithmChange() {
+    let algorithm = this.algorithms.find(algorithm => algorithm.name == this.selectedAlgorithm);
+    this.homeService.getPredictionsByAlgorithm(algorithm.name).subscribe(predictions => {
+      if (algorithm.type == 'regression') {
+        this.tableData.forEach(row => {
+          row.predictedPints = predictions[row.id];
+        });
+      } else {
+        this.tableData.forEach(row => {
+          row.predictedPints = HomeComponentConfiguration.pointsRanges[predictions[row.id]];
+        });
+      }
+      this.tableDataSource.load(this.tableData);
+    });
+  }
+
+  filterTableByName(playerName) {
+    this.tableDataSource.addFilter({field: 'name', search: playerName});
+  }
+
+  filterTableByTeam() {
+    if (this.selectedTeams) {
+      this.tableDataSource.addFilter({
+        field: 'team',
+        search: this.selectedTeams,
+        filter: (value, search) => {
+          return search.some(team => team == value);
+        }
+      });
+    } else {
+      this.tableDataSource.addFilter({
+        field: 'team',
+        search: ''
+      });
+    }
+  }
+
+  filterTableByPrice() {
+    this.tableDataSource.addFilter({
+      field: 'price',
+      search: [this.priceSliderBottom, this.priceSliderUp],
+      filter: (value, search) => {
+        return value >= search[0] && value <= search[1];
+      }
+    });
+  }
+
+  filterTableByForm() {
+    this.tableDataSource.addFilter({
+      field: 'form',
+      search: [this.formSliderBottom, this.formSliderUp],
+      filter: (value, search) => {
+        return value >= search[0] && value <= search[1];
+      }
+    });
+  }
+
+  // test function connecting with backend
+  testFunction(): void {
+    this.homeService.testFunction().subscribe(test => {
+      console.log(test);
+    }, error => {
+      console.log('error occured');
+    });
+  }
+
+}
+
+class HomeComponentConfiguration {
+
+  public static dataExplorationAlgorithms = [
+    {
+      type: 'regression',
+      name: 'Linear Regression'
+    },
+    {
+      type: 'regression',
+      name: 'SVM Regression'
+    },
+    {
+      type: 'classification',
+      name: 'SVM Classification'
+    },
+    {
+      type: 'classification',
+      name: 'Random Forest'
+    },
+    {
+      type: 'classification',
+      name: 'K-nearest neighbors'
+    }
+  ];
+
+  public static priceSliderOptions: Options = {
+    floor: 3,
+    ceil: 14,
+    step: 0.1
+  };
+
+  public static formSliderOptions: Options = {
+    floor: 0,
+    ceil: 10,
+    step: 0.1
+  };
+
+  public static tableSettings = {
     actions: {
       add: false,
       edit: false,
@@ -49,75 +189,8 @@ export class HomeComponent {
     },
     hideSubHeader: true,
   };
-  source: LocalDataSource = new LocalDataSource();
 
-
-  // multiselect dropdown config
-  // TODO: move from component
-  optionsModel: string[];
-  myOptions: IMultiSelectOption[];
-  mySettings: IMultiSelectSettings = {
-    // enableSearch: true,
-    // checkedStyle: 'fontawesome',
-    // buttonClasses: 'btn btn-default btn-hero-primary',
-    // itemClasses: 'btn btn-default',
-    // containerClasses: 'btn btn-default',
-    dynamicTitleMaxItems: 3,
-    displayAllSelectedText: false,
-  };
-  myTexts: IMultiSelectTexts = {
-    checkAll: 'Select all',
-    uncheckAll: 'Unselect all',
-    checked: 'item selected',
-    checkedPlural: 'items selected',
-    searchPlaceholder: 'Find',
-    searchEmptyResult: 'Nothing found...',
-    searchNoRenderText: 'Type in search box to see results...',
-    defaultTitle: 'Team',
-    allSelected: 'All selected',
-  };
-
-  // slider config
-  // TODO: change to values coming from backend
-  value: number = 3;
-  highValue: number = 11;
-  options: Options = {
-    floor: 3,
-    ceil: 14,
-  };
-
-  constructor(private service: SmartTableData, private homeService: HomeService) {
-
-    // loading mocked data for table from smart-table.service.ts
-    // TODO: change to loading from homeService
-    const data = this.service.getData();
-    this.source.load(data);
-
-    // mocked data for teams multiple dropdown
-    // TODO: change to loading from homeService
-    this.myOptions = [
-      {id: 1, name: 'Arsenal London'},
-      {id: 2, name: 'Manchester City'},
-      {id: 3, name: 'Chelsea London'},
-      {id: 4, name: 'Manchester United'},
-      {id: 5, name: 'Everton'},
-      {id: 6, name: 'Liverpool FC'},
-      {id: 7, name: 'Spurs'},
-      {id: 8, name: 'Cardiff'},
-    ];
-  }
-
-  // test function connecting with backend
-  testFunction(): void {
-    this.homeService.testFunction().subscribe(test => {
-      console.log(test);
-    }, error => {
-      console.log('error occured');
-    });
-  }
-
-  // function called on change of multiselect dropdown
-  onChange() {
-    console.log(this.optionsModel);
+  public static pointsRanges = {
+    0: '0', 1: '1-2', 2: '3-6', 3: '>6'
   }
 }
